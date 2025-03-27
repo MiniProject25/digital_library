@@ -1,4 +1,5 @@
 import 'package:digital_library/models/shelfModel.dart';
+import 'package:digital_library/services/ShelfServices.dart';
 import 'package:flutter/material.dart';
 
 /// A screen that shows a modal dialog to create a new shelf.
@@ -11,17 +12,10 @@ class addShelfScreen extends StatefulWidget {
 }
 
 class _addShelfScreenState extends State<addShelfScreen> {
+  shelfServices sService = shelfServices();
+
   /// Controller to handle input for shelf name
   final TextEditingController _shelfName = TextEditingController();
-
-  /// Called when the user taps the 'Add' button.
-  /// If the input is not empty, pops the dialog and returns a Shelf object.
-  void _submitShelf() {
-    final shelfName = _shelfName.text.trim();
-    if (shelfName.isNotEmpty) {
-      Navigator.of(context).pop(Shelf(name: shelfName));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +32,7 @@ class _addShelfScreenState extends State<addShelfScreen> {
           child: Text("Cancel"),
         ),
         // Button to submit the shelf creation
-        ElevatedButton(onPressed: _submitShelf, child: Text("Add")),
+        ElevatedButton(onPressed: () => sService.submitShelf(context, _shelfName), child: Text("Add")),
       ],
     );
   }
