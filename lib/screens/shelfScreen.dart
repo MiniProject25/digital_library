@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:digital_library/services/ShelfServices.dart';
 import 'package:digital_library/services/BookServices.dart';
 import 'addBookScreen.dart';
+import 'package:digital_library/services/db_service.dart';
 
 class shelfScreen extends StatefulWidget {
   final Shelf shelf;
@@ -29,7 +30,9 @@ class _shelfScreenState extends State<shelfScreen> {
   @override
   void initState() {
     super.initState();
-    _loadBooks(); /// loads up the books list
+    _loadBooks();
+
+    /// loads up the books list
     bService.viewAllBooks(books);
   }
 
@@ -39,8 +42,7 @@ class _shelfScreenState extends State<shelfScreen> {
     });
   }
 
-  void _onBookAdded(
-      String shelfId) async {
+  void _onBookAdded(String shelfId) async {
     List<Book> updatedBooks = await bService.getBooksByShelf(shelfId);
     setState(() {
       books = updatedBooks;
@@ -48,13 +50,40 @@ class _shelfScreenState extends State<shelfScreen> {
     });
   }
 
-/// to run at the beginning (when entering the Shelf Screen)
+  /// to run at the beginning (when entering the Shelf Screen)
   void _loadBooks() async {
     List<Book> loadedBooks = await bService.getBooksByShelf(widget.shelf.id);
     setState(() {
       books = loadedBooks;
       filteredBooks = books;
     });
+  }
+
+  Future<void> deleteShelf(String shelfId, BuildContext context) async {
+    await databaseHelper.instance.deleteShelf(shelfId);
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
+  }
+
+  void _confirmDelete(String shelfId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Shelf: ${widget.shelf.name}?"),
+        content: Text("Are you sure you want to delete the shelf?"),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+          TextButton(
+              onPressed: () async {
+                await deleteShelf(shelfId, context);
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context, true);
+              },
+              child: Text("Delete")),
+        ],
+      ),
+    );
   }
 
   @override
@@ -64,7 +93,7 @@ class _shelfScreenState extends State<shelfScreen> {
         title: Text(widget.shelf.name),
         actions: [
           IconButton(
-              onPressed: () => sService.deleteShelf(context),
+              onPressed: () => _confirmDelete(widget.shelf.id),
               icon: Icon(Icons.delete))
         ],
       ),

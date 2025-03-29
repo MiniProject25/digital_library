@@ -67,6 +67,11 @@ class databaseHelper {
     await db.insert('shelves', shelf.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<int> deleteShelf(String shelfId) async {
+    final db = await database;
+    return db.delete('shelves', where: 'id = ?', whereArgs: [shelfId]);
+  }
+
   Future<List<Shelf>> getAllShelves() async {
     final db = await database;
     final List<Map<String, dynamic>> shelfMaps = await db.query('shelves');

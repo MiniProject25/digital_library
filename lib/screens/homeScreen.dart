@@ -1,4 +1,5 @@
 import 'package:digital_library/models/shelfModel.dart';
+import 'package:digital_library/screens/shelfScreen.dart';
 import 'package:digital_library/services/db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_library/widgets/shelfCard.dart';
@@ -31,6 +32,17 @@ class _homeScreenState extends State<homeScreen> {
       setState(() {
         this.shelves = shelves;
       });
+    }
+  }
+
+  Future<void> _navigateToShelf(Shelf shelf, BuildContext context) async {
+    final bool result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => shelfScreen(shelf: shelf)));
+
+    /// if the shelf gets deleted
+    if (result == true) {
+      _loadShelves(); 
     }
   }
 
@@ -135,8 +147,7 @@ class _homeScreenState extends State<homeScreen> {
                         return shelfCard(
                             title: shelves[index].name,
                             onTap: () {
-                              Navigator.pushNamed(context, '/shelfScreen',
-                                  arguments: shelves[index]);
+                              _navigateToShelf(shelves[index], context);
                             });
                       }
 
