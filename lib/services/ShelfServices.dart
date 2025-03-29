@@ -17,8 +17,9 @@ class shelfServices {
     }
   }
 
-  void deleteShelf(BuildContext context) {
-    /// Logic to remove
-    Navigator.pop(context, 'delete');
+  Future<void> deleteShelf(String shelfId, BuildContext context) async {
+    await databaseHelper.instance.deleteShelf(shelfId);
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
   }
 }

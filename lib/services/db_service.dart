@@ -15,7 +15,6 @@ class databaseHelper {
     if (_database != null) return _database!;
     
     _database = await _initDB('books.db');
-    print("Database path: ${_database!.path}");
     return _database!;
   }
 
@@ -60,6 +59,11 @@ class databaseHelper {
   Future<int> insertBook(Book book) async {
     final db = await database;
     return await db.insert('books', book.toMap());
+  }
+
+  Future<int> deleteBook(String bookId) async {
+    final db = await database;
+    return await db.delete('books', where: 'id = ?', whereArgs: [bookId]);
   }
 
   Future<void> insertShelf(Shelf shelf) async {

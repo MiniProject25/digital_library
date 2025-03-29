@@ -1,10 +1,10 @@
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/models/shelfModel.dart';
+import 'package:digital_library/screens/bookDetailsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_library/services/ShelfServices.dart';
 import 'package:digital_library/services/BookServices.dart';
 import 'addBookScreen.dart';
-import 'package:digital_library/services/db_service.dart';
 
 class shelfScreen extends StatefulWidget {
   final Shelf shelf;
@@ -59,12 +59,6 @@ class _shelfScreenState extends State<shelfScreen> {
     });
   }
 
-  Future<void> deleteShelf(String shelfId, BuildContext context) async {
-    await databaseHelper.instance.deleteShelf(shelfId);
-    // ignore: use_build_context_synchronously
-    Navigator.pop(context);
-  }
-
   void _confirmDelete(String shelfId) {
     showDialog(
       context: context,
@@ -76,7 +70,7 @@ class _shelfScreenState extends State<shelfScreen> {
               onPressed: () => Navigator.pop(context), child: Text("Cancel")),
           TextButton(
               onPressed: () async {
-                await deleteShelf(shelfId, context);
+                await sService.deleteShelf(shelfId, context);
                 // ignore: use_build_context_synchronously
                 Navigator.pop(context, true);
               },
@@ -84,6 +78,18 @@ class _shelfScreenState extends State<shelfScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _navigateToBook(Book book, BuildContext context) async {
+    final result = await Navigator.push(
+      context, 
+      MaterialPageRoute(builder: (context) => bookDetailsScreen(book: book))
+    );
+
+    // ignore: unrelated_type_equality_checks
+    if (result == true) {
+      _loadBooks();
+    }
   }
 
   @override
@@ -142,6 +148,7 @@ class _shelfScreenState extends State<shelfScreen> {
                           child: ListTile(
                             title: Text(filteredBooks[index].title),
                             subtitle: Text(filteredBooks[index].author),
+                            onTap: () => _navigateToBook(filteredBooks[index], context),
                           ),
                         );
                       },

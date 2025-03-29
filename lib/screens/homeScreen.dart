@@ -36,7 +36,7 @@ class _homeScreenState extends State<homeScreen> {
   }
 
   Future<void> _navigateToShelf(Shelf shelf, BuildContext context) async {
-    final bool result = await Navigator.push(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => shelfScreen(shelf: shelf)));
 

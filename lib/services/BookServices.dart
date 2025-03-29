@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/services/db_service.dart';
+import 'package:digital_library/widgets/customSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -50,9 +52,34 @@ class bookServices {
     }
   }
 
-  Future<void> uploadBook() async {
+  Future<void> deleteBook(String bookId, BuildContext context) async {
+    await databaseHelper.instance.deleteBook(bookId);
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
+  }
+
+  Future<void> uploadBook(BuildContext context) async {
     result =
-        await FilePicker.platform.pickFiles(allowMultiple: false); // error here
+        await FilePicker.platform.pickFiles(
+          allowMultiple: false,
+          type: FileType.custom,
+          allowedExtensions: ['pdf', 'epub'],
+        ); 
+
+    if (result != null) {
+      File file = File(result!.files.single.path!);
+      String extension = file.path.split('.').last.toLowerCase();
+
+      if (extension != 'pdf' && extension != 'epub') {
+        Customsnackbar.show(context, "Only PDF and EPUB files are allowed", false);
+        return;
+      }
+
+      Customsnackbar.show(context, "File Selected Successfully!", true);
+    }
+    else {
+      Customsnackbar.show(context, "File selection canceled.", false);
+    }
 
     /// logic to add the book to the shelf
     /// add the book to the books list
