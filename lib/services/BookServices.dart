@@ -1,10 +1,12 @@
 import 'package:digital_library/models/bookModel.dart';
+import 'package:digital_library/services/db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class bookServices {
   final uuid = Uuid();
+  final databaseHelper _dbHelper = databaseHelper.instance;
   FilePickerResult? result;
 
   void searchBooks(TextEditingController searchController,
@@ -22,6 +24,7 @@ class bookServices {
     BuildContext context,
     TextEditingController nameController,
     TextEditingController authorController,
+    String shelfId
   ) async {
     if (nameController.text.isNotEmpty &&
         authorController.text.isNotEmpty &&
@@ -33,8 +36,11 @@ class bookServices {
           id: uuid.v1(),
           title: nameController.text,
           author: authorController.text,
-          addedOn: DateTime(date.year, date.month, date.day),
-          filePath: result!.files.single.path ?? '');
+          addedOn: DateTime(date.year, date.month, date.day).toString(),
+          filePath: result!.files.single.path ?? '',
+          shelfId: shelfId);
+
+      await _dbHelper.insertBook(newBook);
 
       Navigator.pop(
         context, newBook
@@ -58,5 +64,25 @@ class bookServices {
       print(
           "Title: ${book.title}, Author: ${book.author}, Added On: ${book.addedOn}, File Path: ${book.filePath}");
     }
+  }
+
+  Future<List<Book>> getBooksByShelf(String shelfId) async {
+    final db = await _dbHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'books',
+      where: 'shelfId = ?',
+      whereArgs: [shelfId],
+    );
+
+    return List.generate(maps.length, (i) {
+      return Book(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        author: maps[i]['author'],
+        addedOn: maps[i]['addedOn'],
+        filePath: maps[i]['filePath'],
+        shelfId: maps[i]['shelfId']
+      );
+    });
   }
 }

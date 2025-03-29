@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 class addBookScreen extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController authorController;
-  final Function(String, String, String) onBookAdded;
+  final Function(String) onBookAdded;
+  final String shelfId;
 
   const addBookScreen({
     Key? key, 
     required this.nameController,
     required this.authorController,
     required this.onBookAdded,
+    required this.shelfId,
   }) : super(key: key);
 
   @override
@@ -49,7 +51,7 @@ class _addBookScreenState extends State<addBookScreen> {
         TextButton(
             onPressed: () => Navigator.pop(context), child: Text("Cancel")),
         ElevatedButton(
-          onPressed: () => bService.addBook(context, widget.nameController, widget.authorController),
+          onPressed: () => bService.addBook(context, widget.nameController, widget.authorController, widget.shelfId),
           child: Text("Add"),
         ),
       ],

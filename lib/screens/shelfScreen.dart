@@ -29,9 +29,7 @@ class _shelfScreenState extends State<shelfScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      filteredBooks = books;
-    });
+    _loadBooks(); /// loads up the books list
     bService.viewAllBooks(books);
   }
 
@@ -41,15 +39,20 @@ class _shelfScreenState extends State<shelfScreen> {
     });
   }
 
-  void _onBookAdded(String title, String author, String filePath, String shelfId) {
+  void _onBookAdded(
+      String shelfId) async {
+    List<Book> updatedBooks = await bService.getBooksByShelf(shelfId);
     setState(() {
-      books.add(Book(
-          id: bService.uuid.v1(),
-          title: title,
-          author: author,
-          addedOn: DateTime.now(),
-          filePath: filePath,
-          shelfId: shelfId));
+      books = updatedBooks;
+      filteredBooks = books;
+    });
+  }
+
+/// to run at the beginning (when entering the Shelf Screen)
+  void _loadBooks() async {
+    List<Book> loadedBooks = await bService.getBooksByShelf(widget.shelf.id);
+    setState(() {
+      books = loadedBooks;
       filteredBooks = books;
     });
   }
@@ -122,17 +125,19 @@ class _shelfScreenState extends State<shelfScreen> {
       /// Button to add a book
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final Book? newBook = await showDialog<Book>(
+          final newBook = await showDialog(
               context: context,
               builder: (BuildContext context) {
                 return addBookScreen(
-                    nameController: _nameController,
-                    authorController: _authorController,
-                    onBookAdded: _onBookAdded);
+                  nameController: _nameController,
+                  authorController: _authorController,
+                  onBookAdded: _onBookAdded,
+                  shelfId: widget.shelf.id,
+                );
               });
 
           if (newBook != null) {
-            _onBookAdded(newBook.title, newBook.author, newBook.filePath);
+            _onBookAdded(newBook.shelfId);
           }
         },
         tooltip: "Add a Book",

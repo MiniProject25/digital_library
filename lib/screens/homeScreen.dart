@@ -1,4 +1,5 @@
 import 'package:digital_library/models/shelfModel.dart';
+import 'package:digital_library/services/db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_library/widgets/shelfCard.dart';
 
@@ -19,6 +20,18 @@ class _homeScreenState extends State<homeScreen> {
   void initState() {
     super.initState();
     // Place for initializing data or loading persisted shelves later
+    _loadShelves();
+  }
+
+  void _loadShelves() async {
+    bool doesShelfExist =
+        await databaseHelper.instance.checkTableExists('shelves');
+    if (doesShelfExist) {
+      List<Shelf> shelves = await databaseHelper.instance.getAllShelves();
+      setState(() {
+        this.shelves = shelves;
+      });
+    }
   }
 
   @override
@@ -91,10 +104,13 @@ class _homeScreenState extends State<homeScreen> {
                           // Navigate to addShelf screen and wait for result
                           final newShelf =
                               await Navigator.pushNamed(context, '/addShelf');
+
                           // If a shelf was created, add it to the list
                           if (newShelf != null) {
+                            final fetchedShelves =
+                                await databaseHelper.instance.getAllShelves();
                             setState(() {
-                              shelves.add(newShelf as Shelf);
+                              shelves = fetchedShelves;
                             });
                           }
                         },
@@ -117,8 +133,10 @@ class _homeScreenState extends State<homeScreen> {
                       /// To display Existing shelves
                       if (index < shelves.length) {
                         return shelfCard(
-                            title: shelves[index].name, onTap: () {
-                              Navigator.pushNamed(context, '/shelfScreen', arguments: shelves[index]);
+                            title: shelves[index].name,
+                            onTap: () {
+                              Navigator.pushNamed(context, '/shelfScreen',
+                                  arguments: shelves[index]);
                             });
                       }
 
