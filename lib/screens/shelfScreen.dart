@@ -6,6 +6,8 @@ import 'package:digital_library/services/ShelfServices.dart';
 import 'package:digital_library/services/BookServices.dart';
 import 'addBookScreen.dart';
 
+/// Displays the books in a specific shelf and allows searching, deleting,
+/// and navigating to book details or adding new books.
 class shelfScreen extends StatefulWidget {
   final Shelf shelf;
 
@@ -16,32 +18,34 @@ class shelfScreen extends StatefulWidget {
 }
 
 class _shelfScreenState extends State<shelfScreen> {
-  /// services
+  /// Services for book and shelf operations
   final bookServices bService = bookServices();
   final shelfServices sService = shelfServices();
 
+  /// Controllers for searching and adding books
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _authorController = TextEditingController();
 
+  /// Books currently in the shelf and the filtered list (after search)
   List<Book> books = [];
   List<Book> filteredBooks = [];
 
   @override
   void initState() {
     super.initState();
-    _loadBooks();
-
-    /// loads up the books list
-    bService.viewAllBooks(books);
+    _loadBooks(); // Load books belonging to this shelf
+    bService.viewAllBooks(books); // (optional) for general usage/debug
   }
 
+  /// Updates filteredBooks with the result from a search
   void updateSearchResults(List<Book> results) {
     setState(() {
       filteredBooks = results;
     });
   }
 
+  /// Called when a book is added to refresh the list
   void _onBookAdded(String shelfId) async {
     List<Book> updatedBooks = await bService.getBooksByShelf(shelfId);
     setState(() {
@@ -50,7 +54,7 @@ class _shelfScreenState extends State<shelfScreen> {
     });
   }
 
-  /// to run at the beginning (when entering the Shelf Screen)
+  /// Loads books from DB for the given shelf
   void _loadBooks() async {
     List<Book> loadedBooks = await bService.getBooksByShelf(widget.shelf.id);
     setState(() {
@@ -59,6 +63,7 @@ class _shelfScreenState extends State<shelfScreen> {
     });
   }
 
+  /// Confirm delete dialog for shelf
   void _confirmDelete(String shelfId) {
     showDialog(
       context: context,
@@ -71,8 +76,7 @@ class _shelfScreenState extends State<shelfScreen> {
           TextButton(
               onPressed: () async {
                 await sService.deleteShelf(shelfId, context);
-                // ignore: use_build_context_synchronously
-                Navigator.pop(context, true);
+                Navigator.pop(context, true); // return true to pop screen
               },
               child: Text("Delete")),
         ],
@@ -80,15 +84,15 @@ class _shelfScreenState extends State<shelfScreen> {
     );
   }
 
+  /// Navigates to Book Details and reloads list if book gets deleted
   Future<void> _navigateToBook(Book book, BuildContext context) async {
     final result = await Navigator.push(
       context, 
       MaterialPageRoute(builder: (context) => bookDetailsScreen(book: book))
     );
 
-    // ignore: unrelated_type_equality_checks
     if (result == true) {
-      _loadBooks();
+      _loadBooks(); // Reload if book was removed
     }
   }
 
@@ -107,6 +111,7 @@ class _shelfScreenState extends State<shelfScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            /// Search bar with live updates
             Row(
               children: [
                 Expanded(
@@ -121,18 +126,16 @@ class _shelfScreenState extends State<shelfScreen> {
                         _searchController, updateSearchResults, books),
                   ),
                 ),
-                SizedBox(
-                  width: 8,
-                ),
+                SizedBox(width: 8),
                 IconButton(
                     onPressed: () => bService.searchBooks(
                         _searchController, updateSearchResults, books),
                     icon: Icon(Icons.search)),
               ],
             ),
-            SizedBox(
-              height: 16,
-            ),
+            SizedBox(height: 16),
+
+            /// Book list or empty prompt
             Expanded(
               child: filteredBooks.isEmpty
                   ? Center(
@@ -158,7 +161,7 @@ class _shelfScreenState extends State<shelfScreen> {
         ),
       ),
 
-      /// Button to add a book
+      /// Button to add a new book using a dialog
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final newBook = await showDialog(

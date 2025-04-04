@@ -22,6 +22,8 @@ class Book {
   /// ID of the shelf to which this book belongs.
   final String shelfId;
 
+  final int lastRead;
+
   /// Creates a new [Book] object with the required details.
   ///
   /// The [id] should be unique, [title] and [author] provide book details,
@@ -34,6 +36,7 @@ class Book {
     required this.addedOn,
     required this.filePath,
     required this.shelfId,
+    required this.lastRead,
   });
 
   /// Converts the [Book] object into a `Map<String, dynamic>` format.
@@ -48,6 +51,7 @@ class Book {
       'addedOn': addedOn,
       'filePath': filePath,
       'shelfId': shelfId,
+      'lastRead': lastRead,
     };
   }
 
@@ -64,6 +68,7 @@ class Book {
       addedOn: map['addedOn'],
       filePath: map['filePath'],
       shelfId: map['shelfId'],
+      lastRead: map['lastRead'],
     );
   }
 }

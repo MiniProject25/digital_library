@@ -1,10 +1,22 @@
 import 'package:digital_library/services/BookServices.dart';
 import 'package:flutter/material.dart';
 
+/// A modal dialog screen for adding a new book to a shelf.
+///
+/// This screen allows the user to input the book title and author name,
+/// and upload a corresponding PDF file. Upon submission, the book is
+/// added to the SQLite database via [bookServices].
 class addBookScreen extends StatefulWidget {
+  /// Controller for capturing the book title input.
   final TextEditingController nameController;
+
+  /// Controller for capturing the author name input.
   final TextEditingController authorController;
+
+  /// Callback to notify parent widget that a book has been added.
   final Function(String) onBookAdded;
+
+  /// ID of the shelf where the book should be added.
   final String shelfId;
 
   const addBookScreen({
@@ -20,6 +32,8 @@ class addBookScreen extends StatefulWidget {
 }
 
 class _addBookScreenState extends State<addBookScreen> {
+  /// Service class responsible for handling book-related operations
+  /// like uploading files and inserting book data into the database.
   bookServices bService = bookServices();
 
   @override
@@ -27,20 +41,21 @@ class _addBookScreenState extends State<addBookScreen> {
     return AlertDialog(
       title: Text("Add a book"),
       content: Column(
-        // mainAxisSize: MainAxisSize.min,
+        // Ensures content fits nicely inside the alert dialog
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // name of the book field
+          // Text field to enter book title
           TextField(
             controller: widget.nameController,
             decoration: InputDecoration(hintText: "Book title"),
           ),
-          // name of the author field
+          // Text field to enter author name
           TextField(
             controller: widget.authorController,
             decoration: InputDecoration(hintText: "Author name"),
           ),
 
-          /// upload the PDF file here
+          /// Button to trigger file picker and upload a PDF file.
           MaterialButton(
             onPressed: () => bService.uploadBook(context),
             child: Text('Upload a file'),
@@ -48,10 +63,18 @@ class _addBookScreenState extends State<addBookScreen> {
         ],
       ),
       actions: [
+        // Closes the dialog without saving
         TextButton(
             onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+        
+        /// Saves the book information using bookServices and closes the dialog.
         ElevatedButton(
-          onPressed: () => bService.addBook(context, widget.nameController, widget.authorController, widget.shelfId),
+          onPressed: () => bService.addBook(
+            context,
+            widget.nameController,
+            widget.authorController,
+            widget.shelfId,
+          ),
           child: Text("Add"),
         ),
       ],

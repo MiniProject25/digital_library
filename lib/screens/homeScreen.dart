@@ -1,11 +1,15 @@
+import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/models/shelfModel.dart';
+import 'package:digital_library/screens/bookDetailsScreen.dart';
 import 'package:digital_library/screens/shelfScreen.dart';
+import 'package:digital_library/services/BookServices.dart';
+import 'package:digital_library/services/ShelfServices.dart';
 import 'package:digital_library/services/db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_library/widgets/shelfCard.dart';
 
 /// The main screen of the digital library.
-/// Displays user's shelves and recently read books.
+/// Displays the user's shelves and recently read books.
 class homeScreen extends StatefulWidget {
   const homeScreen({super.key});
 
@@ -17,30 +21,51 @@ class _homeScreenState extends State<homeScreen> {
   /// List to store the user's shelves
   List<Shelf> shelves = [];
 
+  /// List to store recently read books
+  List<Book> recentlyRead = [];
+
+  /// Service to handle book-related operations
+  bookServices bService = bookServices();
+
+  /// Service to handle shelf-related operations
+  shelfServices sService = shelfServices();
+
   @override
   void initState() {
     super.initState();
-    // Place for initializing data or loading persisted shelves later
     _loadShelves();
+    _loadRecentlyRead();
   }
 
+  /// Loads all the shelves from the database (if table exists)
   void _loadShelves() async {
     bool doesShelfExist =
         await databaseHelper.instance.checkTableExists('shelves');
     if (doesShelfExist) {
-      List<Shelf> shelves = await databaseHelper.instance.getAllShelves();
+      List<Shelf> shelves = await sService.getAllShelves();
       setState(() {
         this.shelves = shelves;
       });
     }
   }
 
+  /// Loads the list of books that were recently read
+  void _loadRecentlyRead() async {
+    print("Called isRecentlyRead!");
+    List<Book> recent = await bService.getRecentlyReadBooks();
+    setState(() {
+      recentlyRead = recent;
+    });
+    print("Exiting isRecentlyRead");
+  }
+
+  /// Navigates to a shelf screen and reloads shelves if any changes occur
   Future<void> _navigateToShelf(Shelf shelf, BuildContext context) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => shelfScreen(shelf: shelf)));
 
-    /// if the shelf gets deleted
+    /// If shelf was deleted or modified
     if (result == true) {
       _loadShelves(); 
     }
@@ -49,10 +74,10 @@ class _homeScreenState extends State<homeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /// App bar with custom style
+      /// App bar with a welcoming message
       appBar: AppBar(
         title: Text("Welcome to your Digital Library!"),
-        backgroundColor: Color.fromARGB(0, 255, 16, 240), // Transparent color
+        backgroundColor: Color.fromARGB(0, 255, 16, 240),
         titleTextStyle: TextStyle(
           color: const Color.fromARGB(255, 0, 0, 0),
           fontSize: 25,
@@ -62,7 +87,7 @@ class _homeScreenState extends State<homeScreen> {
         toolbarHeight: 100,
       ),
 
-      /// Right-side drawer for future settings or personalization
+      /// Drawer for future settings or advanced options
       endDrawer: Drawer(
         child: ListView(
           children: [
@@ -79,14 +104,18 @@ class _homeScreenState extends State<homeScreen> {
                 print("Clicked 2!");
               },
             ),
+            ListTile(
+              title: Text("Delete DB"),
+              onTap: () => databaseHelper.instance.deleteDatabaseFile(),
+            )
           ],
         ),
       ),
 
-      /// Main screen body layout
+      /// Main UI section showing shelves and recently read books
       body: Column(
         children: [
-          /// Section: Shelf list or prompt to create shelves
+          /// Horizontal list of shelves or message to create a shelf
           SizedBox(
             height: 300,
             child: shelves.isEmpty
@@ -110,17 +139,15 @@ class _homeScreenState extends State<homeScreen> {
                       ),
                       SizedBox(height: 16),
 
-                      /// Add shelf button (shown only when no shelves exist)
+                      /// Circular "+" button to create new shelf
                       ElevatedButton(
                         onPressed: () async {
-                          // Navigate to addShelf screen and wait for result
                           final newShelf =
                               await Navigator.pushNamed(context, '/addShelf');
 
-                          // If a shelf was created, add it to the list
                           if (newShelf != null) {
                             final fetchedShelves =
-                                await databaseHelper.instance.getAllShelves();
+                                await sService.getAllShelves();
                             setState(() {
                               shelves = fetchedShelves;
                             });
@@ -142,24 +169,23 @@ class _homeScreenState extends State<homeScreen> {
                     scrollDirection: Axis.horizontal,
                     itemCount: shelves.length + 1,
                     itemBuilder: (context, index) {
-                      /// To display Existing shelves
+                      /// Show existing shelves
                       if (index < shelves.length) {
                         return shelfCard(
-                            title: shelves[index].name,
-                            onTap: () {
-                              _navigateToShelf(shelves[index], context);
-                            });
+                          title: shelves[index].name,
+                          onTap: () {
+                            _navigateToShelf(shelves[index], context);
+                          },
+                        );
                       }
 
-                      /// Adding the + Icon Card to add more shelves
+                      /// Show '+' card to add a new shelf
                       else {
                         return shelfCard(
                           title: "Add a Shelf",
                           onTap: () async {
-                            // Navigate to addShelf screen and wait for result
                             final newShelf =
                                 await Navigator.pushNamed(context, '/addShelf');
-                            // If a shelf was created, add it to the list
                             if (newShelf != null) {
                               setState(() {
                                 shelves.add(newShelf as Shelf);
@@ -174,20 +200,32 @@ class _homeScreenState extends State<homeScreen> {
 
           const SizedBox(height: 20),
 
-          /// Section: Recently Read Books
+          /// Vertical list of recently read books
           Expanded(
             child: Container(
               width: MediaQuery.of(context).size.width,
               color: Colors.amber,
               margin: EdgeInsets.only(bottom: 20, left: 10, right: 10),
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Placeholder for recently read books or book cards
-                ],
-              ),
+
+              /// Display message if list is empty
+              child: recentlyRead.isEmpty 
+                ? Center(child: Text("No Recently read books"))
+                : ListView.builder(
+                    itemCount: recentlyRead.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(recentlyRead[index].title),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                bookDetailsScreen(book: recentlyRead[index]),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
             ),
           ),
         ],
