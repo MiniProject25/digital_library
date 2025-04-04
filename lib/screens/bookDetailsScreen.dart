@@ -1,7 +1,6 @@
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/screens/pdfViewerScreen.dart';
 import 'package:digital_library/services/BookServices.dart';
-import 'package:digital_library/services/db_service.dart';
 import 'package:flutter/material.dart';
 
 /// Displays detailed information about a selected [Book].
@@ -71,6 +70,8 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> {
                 /// Opens PDF viewer and updates last read timestamp
                 ElevatedButton(
                   onPressed: () async {
+                    await bService.updateLastRead(widget.book.id);
+                    
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -81,7 +82,6 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> {
                       ),
                     );
 
-                    await bService.updateLastRead(widget.book.id);
                   },
                   child: Text("Read"),
                 ),

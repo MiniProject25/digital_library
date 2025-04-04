@@ -4,6 +4,8 @@ import 'package:digital_library/screens/homeScreen.dart';
 import 'package:digital_library/screens/shelfScreen.dart';
 import 'package:flutter/material.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+
 void main() {
   runApp(
     MyApp(),
@@ -18,6 +20,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
+      navigatorObservers: [routeObserver],
 
       initialRoute: '/',
       // Static routes — for screens that DON'T need arguments

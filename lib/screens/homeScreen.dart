@@ -1,3 +1,4 @@
+import 'package:digital_library/main.dart';
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/models/shelfModel.dart';
 import 'package:digital_library/screens/bookDetailsScreen.dart';
@@ -17,7 +18,7 @@ class homeScreen extends StatefulWidget {
   State<homeScreen> createState() => _homeScreenState();
 }
 
-class _homeScreenState extends State<homeScreen> {
+class _homeScreenState extends State<homeScreen> with RouteAware {
   /// List to store the user's shelves
   List<Shelf> shelves = [];
 
@@ -37,6 +38,30 @@ class _homeScreenState extends State<homeScreen> {
     _loadRecentlyRead();
   }
 
+  @override
+  void didPopNext() {
+    // TODO: implement didPopNext
+    super.didPopNext();
+    _loadRecentlyRead();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute<dynamic>) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
   /// Loads all the shelves from the database (if table exists)
   void _loadShelves() async {
     bool doesShelfExist =
@@ -51,12 +76,10 @@ class _homeScreenState extends State<homeScreen> {
 
   /// Loads the list of books that were recently read
   void _loadRecentlyRead() async {
-    print("Called isRecentlyRead!");
     List<Book> recent = await bService.getRecentlyReadBooks();
     setState(() {
       recentlyRead = recent;
     });
-    print("Exiting isRecentlyRead");
   }
 
   /// Navigates to a shelf screen and reloads shelves if any changes occur
@@ -68,6 +91,7 @@ class _homeScreenState extends State<homeScreen> {
     /// If shelf was deleted or modified
     if (result == true) {
       _loadShelves(); 
+      _loadRecentlyRead();
     }
   }
 
@@ -222,6 +246,13 @@ class _homeScreenState extends State<homeScreen> {
                             builder: (context) =>
                                 bookDetailsScreen(book: recentlyRead[index]),
                           ),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () async {
+                            await bService.updateLastReadToZero(recentlyRead[index].id);
+                            _loadRecentlyRead();
+                          } 
                         ),
                       );
                     },

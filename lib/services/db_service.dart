@@ -71,6 +71,11 @@ class databaseHelper {
     return await db.delete('books', where: 'id = ?', whereArgs: [bookId]);
   }
 
+  Future<int> deleteBookByShelf(String shelfId) async {
+    final db = await database;
+    return await db.delete('books', where: 'shelfId = ?', whereArgs: [shelfId]);
+  }
+
   /// Inserts a shelf. If it already exists, replaces it.
   Future<void> insertShelf(Shelf shelf) async {
     final db = await database;

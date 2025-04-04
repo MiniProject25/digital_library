@@ -36,6 +36,9 @@ class shelfServices {
   Future<void> deleteShelf(String shelfId, BuildContext context) async {
     await databaseHelper.instance.deleteShelf(shelfId);
 
+    // cascade delete of the books
+    await databaseHelper.instance.deleteBookByShelf(shelfId);
+
     // ignore: use_build_context_synchronously
     Navigator.pop(context);
   }

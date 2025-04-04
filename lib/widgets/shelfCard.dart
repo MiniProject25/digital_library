@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// A reusable widget that represents a single shelf as a card.
+///
+/// This widget is typically used in a grid or list of shelves. It shows the
+/// shelf title and responds to tap gestures.
+///
+/// [title] - The name/title of the shelf to be displayed.
+/// [onTap] - Callback function to be executed when the card is tapped.
 class shelfCard extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
@@ -9,7 +16,7 @@ class shelfCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, 
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.all(10),
         width: 150,
@@ -19,9 +26,16 @@ class shelfCard extends StatelessWidget {
           border: Border.all(color: Colors.black12),
         ),
         child: Center(
-          child: Text(title),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
   }
-} 
+}

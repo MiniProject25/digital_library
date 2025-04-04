@@ -127,7 +127,7 @@ class bookServices {
   /// Limited to top 5 results.
   Future<List<Book>> getRecentlyReadBooks() async {
     final db = await databaseHelper.instance.database;
-    final result = await db.query('books', orderBy: 'lastRead DESC', limit: 5);
+    final result = await db.query('books',where: 'lastRead > 0', orderBy: 'lastRead DESC', limit: 5);
 
     return result.map((e) => Book.fromMap(e)).toList();
   }
@@ -137,6 +137,14 @@ class bookServices {
     final db = await databaseHelper.instance.database;
     await db.update(
         'books', {'lastRead': DateTime.now().millisecondsSinceEpoch},
+        where: 'id = ?', whereArgs: [bookId]);
+  }
+
+  /// update LastRead to 0 when removing from recently read list
+  Future<void> updateLastReadToZero(String bookId) async {
+    final db = await databaseHelper.instance.database;
+    await db.update(
+        'books', {'lastRead': 0},
         where: 'id = ?', whereArgs: [bookId]);
   }
 }
