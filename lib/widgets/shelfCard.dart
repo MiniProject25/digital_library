@@ -24,6 +24,14 @@ class shelfCard extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey,
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3)
+            ),
+          ]
         ),
         child: Center(
           child: Text(

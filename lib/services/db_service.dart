@@ -52,6 +52,7 @@ class databaseHelper {
           filePath TEXT NOT NULL,
           shelfId TEXT NOT NULL,
           lastRead INTEGER,
+          rating INTEGER,
           FOREIGN KEY (shelfId) REFERENCES shelves(id) ON DELETE CASCADE
         );
       ''');

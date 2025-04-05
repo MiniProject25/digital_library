@@ -74,6 +74,7 @@ class bookServices {
         filePath: result!.files.single.path ?? '',
         shelfId: shelfId,
         lastRead: 0,
+        rating: 0,
       );
 
       await _dbHelper.insertBook(newBook);
@@ -119,6 +120,7 @@ class bookServices {
         filePath: maps[i]['filePath'],
         shelfId: maps[i]['shelfId'],
         lastRead: maps[i]['lastRead'],
+        rating: maps[i]['rating'],
       );
     });
   }
@@ -146,5 +148,11 @@ class bookServices {
     await db.update(
         'books', {'lastRead': 0},
         where: 'id = ?', whereArgs: [bookId]);
+  }
+
+  /// update the book rating
+  Future<void> updateBookRating(String bookId, int newRating) async {
+    final db = await databaseHelper.instance.database;
+    await db.update('books', {'rating' : newRating}, where: 'id = ?', whereArgs: [bookId]);
   }
 }

@@ -106,6 +106,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
           color: const Color.fromARGB(255, 0, 0, 0),
           fontSize: 25,
           fontFamily: 'Lucida',
+          overflow: TextOverflow.ellipsis
         ),
         centerTitle: true,
         toolbarHeight: 100,
@@ -234,7 +235,13 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
 
               /// Display message if list is empty
               child: recentlyRead.isEmpty 
-                ? Center(child: Text("No Recently read books"))
+                ? Center(child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.book),
+                    Text("No recently read books", style: TextStyle(color: Colors.white, fontSize: 20),),
+                  ],
+                ))
                 : ListView.builder(
                     itemCount: recentlyRead.length,
                     itemBuilder: (context, index) {

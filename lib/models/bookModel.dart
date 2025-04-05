@@ -22,7 +22,11 @@ class Book {
   /// ID of the shelf to which this book belongs.
   final String shelfId;
 
-  final int lastRead;
+  /// timestamp in milliseconds of the last time the book was read.
+  int lastRead;
+
+  /// integer that denotes the rating of the book (out of 5)
+  int rating;
 
   /// Creates a new [Book] object with the required details.
   ///
@@ -37,6 +41,7 @@ class Book {
     required this.filePath,
     required this.shelfId,
     required this.lastRead,
+    required this.rating,
   });
 
   /// Converts the [Book] object into a `Map<String, dynamic>` format.
@@ -52,6 +57,7 @@ class Book {
       'filePath': filePath,
       'shelfId': shelfId,
       'lastRead': lastRead,
+      'rating': rating,
     };
   }
 
@@ -69,6 +75,7 @@ class Book {
       filePath: map['filePath'],
       shelfId: map['shelfId'],
       lastRead: map['lastRead'],
+      rating: map['rating'],
     );
   }
 }
