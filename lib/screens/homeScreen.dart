@@ -1,6 +1,7 @@
 import 'package:digital_library/main.dart';
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/models/shelfModel.dart';
+import 'package:digital_library/screens/addShelfScreen.dart';
 import 'package:digital_library/screens/bookDetailsScreen.dart';
 import 'package:digital_library/screens/shelfScreen.dart';
 import 'package:digital_library/services/BookServices.dart';
@@ -84,13 +85,12 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
 
   /// Navigates to a shelf screen and reloads shelves if any changes occur
   Future<void> _navigateToShelf(Shelf shelf, BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => shelfScreen(shelf: shelf)));
+    final result = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => shelfScreen(shelf: shelf)));
 
     /// If shelf was deleted or modified
     if (result == true) {
-      _loadShelves(); 
+      _loadShelves();
       _loadRecentlyRead();
     }
   }
@@ -103,11 +103,10 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
         title: Text("Welcome to your Digital Library!"),
         backgroundColor: Color.fromARGB(0, 255, 16, 240),
         titleTextStyle: TextStyle(
-          color: const Color.fromARGB(255, 0, 0, 0),
-          fontSize: 25,
-          fontFamily: 'Lucida',
-          overflow: TextOverflow.ellipsis
-        ),
+            color: const Color.fromARGB(255, 0, 0, 0),
+            fontSize: 25,
+            fontFamily: 'Lucida',
+            overflow: TextOverflow.ellipsis),
         centerTitle: true,
         toolbarHeight: 100,
       ),
@@ -116,7 +115,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
       endDrawer: Drawer(
         child: ListView(
           children: [
-            const DrawerHeader(child: Text("Drawer Header")),
+            const DrawerHeader(child: Text("Digital Reader")),
             ListTile(
               title: const Text("Settings"),
               onTap: () {
@@ -167,8 +166,11 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                       /// Circular "+" button to create new shelf
                       ElevatedButton(
                         onPressed: () async {
-                          final newShelf =
-                              await Navigator.pushNamed(context, '/addShelf');
+                          final newShelf = await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return addShelfScreen();
+                              });
 
                           if (newShelf != null) {
                             final fetchedShelves =
@@ -209,8 +211,11 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                         return shelfCard(
                           title: "Add a Shelf",
                           onTap: () async {
-                            final newShelf =
-                                await Navigator.pushNamed(context, '/addShelf');
+                            final newShelf = await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return addShelfScreen();
+                                });
                             if (newShelf != null) {
                               setState(() {
                                 shelves.add(newShelf as Shelf);
@@ -234,36 +239,40 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
 
               /// Display message if list is empty
-              child: recentlyRead.isEmpty 
-                ? Center(child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.book),
-                    Text("No recently read books", style: TextStyle(color: Colors.white, fontSize: 20),),
-                  ],
-                ))
-                : ListView.builder(
-                    itemCount: recentlyRead.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(recentlyRead[index].title),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                bookDetailsScreen(book: recentlyRead[index]),
+              child: recentlyRead.isEmpty
+                  ? Center(
+                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.book),
+                        Text(
+                          "No recently read books",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                      ],
+                    ))
+                  : ListView.builder(
+                      itemCount: recentlyRead.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(recentlyRead[index].title),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  bookDetailsScreen(book: recentlyRead[index]),
+                            ),
                           ),
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () async {
-                            await bService.updateLastReadToZero(recentlyRead[index].id);
-                            _loadRecentlyRead();
-                          } 
-                        ),
-                      );
-                    },
-                  ),
+                          trailing: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                await bService.updateLastReadToZero(
+                                    recentlyRead[index].id);
+                                _loadRecentlyRead();
+                              }),
+                        );
+                      },
+                    ),
             ),
           ),
         ],
