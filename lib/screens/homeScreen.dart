@@ -100,14 +100,15 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
     return Scaffold(
       /// App bar with a welcoming message
       appBar: AppBar(
-        title: Text("Welcome to your Digital Library!"),
-        backgroundColor: Color.fromARGB(0, 255, 16, 240),
+        title: Text("Welcome to Digital Library!"),
+        backgroundColor: Color.fromRGBO(90, 198, 244, 1),
         titleTextStyle: TextStyle(
-            color: const Color.fromARGB(255, 0, 0, 0),
+            color: const Color.fromARGB(255, 255, 255, 255),
             fontSize: 25,
             fontFamily: 'Lucida',
-            overflow: TextOverflow.ellipsis),
-        centerTitle: true,
+            overflow: TextOverflow.ellipsis,
+            backgroundColor: Color.fromRGBO(90, 198, 244, 1)),
+        centerTitle: false,
         toolbarHeight: 100,
       ),
 
@@ -140,111 +141,122 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
       body: Column(
         children: [
           /// Horizontal list of shelves or message to create a shelf
-          SizedBox(
-            height: 300,
-            child: shelves.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "No Shelves yet!",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[700],
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 26),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(90, 198, 244, 1),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              width: double.infinity,
+              height: 300,
+              child: shelves.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "No Shelves yet!",
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Tap + to add one.",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
+                        SizedBox(height: 8),
+                        Text(
+                          "Tap + to add one.",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 16),
+                        SizedBox(height: 16),
 
-                      /// Circular "+" button to create new shelf
-                      ElevatedButton(
-                        onPressed: () async {
-                          final newShelf = await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return addShelfScreen();
-                              });
-
-                          if (newShelf != null) {
-                            final fetchedShelves =
-                                await sService.getAllShelves();
-                            setState(() {
-                              shelves = fetchedShelves;
-                            });
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          backgroundColor: Colors.blueAccent,
-                          padding: EdgeInsets.all(18),
-                        ),
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  )
-                : ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: shelves.length + 1,
-                    itemBuilder: (context, index) {
-                      /// Show existing shelves
-                      if (index < shelves.length) {
-                        return shelfCard(
-                          title: shelves[index].name,
-                          onTap: () {
-                            _navigateToShelf(shelves[index], context);
-                          },
-                        );
-                      }
-
-                      /// Show '+' card to add a new shelf
-                      else {
-                        return shelfCard(
-                          title: "Add a Shelf",
-                          onTap: () async {
+                        /// Circular "+" button to create new shelf
+                        ElevatedButton(
+                          onPressed: () async {
                             final newShelf = await showDialog(
                                 context: context,
                                 builder: (context) {
                                   return addShelfScreen();
                                 });
+
                             if (newShelf != null) {
+                              final fetchedShelves =
+                                  await sService.getAllShelves();
                               setState(() {
-                                shelves.add(newShelf as Shelf);
+                                shelves = fetchedShelves;
                               });
                             }
                           },
-                        );
-                      }
-                    },
-                  ),
+                          style: ElevatedButton.styleFrom(
+                            shape: CircleBorder(),
+                            backgroundColor: Colors.blueAccent,
+                            padding: EdgeInsets.all(18),
+                          ),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: shelves.length + 1,
+                      itemBuilder: (context, index) {
+                        /// Show existing shelves
+                        if (index < shelves.length) {
+                          return shelfCard(
+                            title: shelves[index].name,
+                            onTap: () {
+                              _navigateToShelf(shelves[index], context);
+                            },
+                          );
+                        }
+
+                        /// Show '+' card to add a new shelf
+                        else {
+                          return shelfCard(
+                            title: "Add a Shelf",
+                            onTap: () async {
+                              final newShelf = await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return addShelfScreen();
+                                  });
+                              if (newShelf != null) {
+                                setState(() {
+                                  shelves.add(newShelf as Shelf);
+                                });
+                              }
+                            },
+                          );
+                        }
+                      },
+                    ),
+            ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 8),
 
           /// Vertical list of recently read books
           Expanded(
             child: Container(
-              width: MediaQuery.of(context).size.width,
-              color: Colors.amber,
-              margin: EdgeInsets.only(bottom: 20, left: 10, right: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+                color: Color.fromRGBO(90, 198, 244, 1),
+              ),
+              width: MediaQuery.of(context).size.width,   
+              margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-
+            
               /// Display message if list is empty
               child: recentlyRead.isEmpty
                   ? Center(
                       child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.book),
+                        Icon(Icons.book, color: Colors.white,),
                         Text(
                           "No recently read books",
                           style: TextStyle(color: Colors.white, fontSize: 20),
