@@ -24,10 +24,15 @@ class _addShelfScreenState extends State<addShelfScreen> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      titleTextStyle: TextStyle(fontFamily: 'Poppins', fontSize: 22,),
+      backgroundColor: Colors.deepPurple.shade300,
       title: Text("Create a New Shelf"),
       content: TextField(
         controller: _shelfName,
-        decoration: InputDecoration(hintText: "Enter shelf name"),
+        decoration: InputDecoration(
+          hintText: "Enter shelf name", 
+          hintStyle: TextStyle(color: Colors.white)
+        ),
       ),
       actions: [
         // Closes the dialog without saving

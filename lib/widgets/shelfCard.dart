@@ -21,24 +21,19 @@ class shelfCard extends StatelessWidget {
         margin: const EdgeInsets.all(10),
         width: 150,
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: const Color.fromARGB(255, 91, 52, 159),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey,
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3)
-            ),
-          ]
+
         ),
         child: Center(
           child: Text(
             title,
             style: TextStyle(
+              color: Colors.white,
               fontSize: 16,
-              fontWeight: FontWeight.w500,
+              // fontWeight: FontWeight.w500,
+              fontFamily: 'OpenSans'
             ),
             textAlign: TextAlign.center,
           ),

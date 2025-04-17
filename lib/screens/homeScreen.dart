@@ -98,18 +98,22 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Color.fromRGBO(137, 157, 239, 1),
       /// App bar with a welcoming message
       appBar: AppBar(
-        title: Text("Welcome to Digital Library!"),
-        backgroundColor: Color.fromRGBO(90, 198, 244, 1),
+        title: Text("Welcome to ReadSpace!"),
+        backgroundColor: Color.fromRGBO(94, 0, 159, 1),
         titleTextStyle: TextStyle(
             color: const Color.fromARGB(255, 255, 255, 255),
             fontSize: 25,
-            fontFamily: 'Lucida',
+            fontFamily: 'Poppins',
             overflow: TextOverflow.ellipsis,
-            backgroundColor: Color.fromRGBO(90, 198, 244, 1)),
+            fontWeight: FontWeight.bold,),
         centerTitle: false,
         toolbarHeight: 100,
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
       ),
 
       /// Drawer for future settings or advanced options
@@ -145,7 +149,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 26),
             child: Container(
               decoration: BoxDecoration(
-                color: Color.fromRGBO(90, 198, 244, 1),
+                color: Color.fromRGBO(94, 0, 159, 1),
                 borderRadius: BorderRadius.circular(16.0),
               ),
               width: double.infinity,
@@ -157,6 +161,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                         Text(
                           "No Shelves yet!",
                           style: TextStyle(
+                            fontFamily: 'OpenSans',
                             fontSize: 24,
                             color: Colors.white,
                           ),
@@ -165,6 +170,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                         Text(
                           "Tap + to add one.",
                           style: TextStyle(
+                            fontFamily: 'OpenSans',
                             fontSize: 16,
                             color: Colors.white,
                           ),
@@ -190,7 +196,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                           },
                           style: ElevatedButton.styleFrom(
                             shape: CircleBorder(),
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Colors.deepPurpleAccent,
                             padding: EdgeInsets.all(18),
                           ),
                           child: Icon(
@@ -244,7 +250,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0),
-                color: Color.fromRGBO(90, 198, 244, 1),
+                color: Color.fromRGBO(94, 0, 159, 1),
               ),
               width: MediaQuery.of(context).size.width,   
               margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
@@ -259,7 +265,8 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                         Icon(Icons.book, color: Colors.white,),
                         Text(
                           "No recently read books",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+                          style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'OpenSans',),
+                          
                         ),
                       ],
                     ))
