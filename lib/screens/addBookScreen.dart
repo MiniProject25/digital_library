@@ -40,6 +40,12 @@ class _addBookScreenState extends State<addBookScreen> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text("Add a book"),
+      titleTextStyle: TextStyle(
+        color: Colors.deepPurple,
+        fontSize: 22,
+        fontFamily: 'Poppins'
+      ),
+      backgroundColor: Colors.deepPurple.shade50,
       content: Column(
         // Ensures content fits nicely inside the alert dialog
         mainAxisSize: MainAxisSize.min,
@@ -47,25 +53,40 @@ class _addBookScreenState extends State<addBookScreen> {
           // Text field to enter book title
           TextField(
             controller: widget.nameController,
-            decoration: InputDecoration(hintText: "Book title"),
+            decoration: InputDecoration(
+              hintText: "Book title",
+              hintStyle: TextStyle(color: Colors.deepPurple),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.deepPurple),
+              )
+            ),
           ),
+
+          SizedBox(height: 16,),
           // Text field to enter author name
           TextField(
             controller: widget.authorController,
-            decoration: InputDecoration(hintText: "Author name"),
+            decoration: InputDecoration(
+              hintText: "Author name",
+              hintStyle: TextStyle(color: Colors.deepPurple),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.deepPurple),
+              )
+            ),
           ),
 
+          SizedBox(height: 16,),
           /// Button to trigger file picker and upload a PDF file.
           MaterialButton(
             onPressed: () => bService.uploadBook(context),
-            child: Text('Upload a file'),
+            child: Text('Upload a file', style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.w500),),
           ),
         ],
       ),
       actions: [
         // Closes the dialog without saving
         TextButton(
-            onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+            onPressed: () => Navigator.pop(context), child: Text("Cancel", style: TextStyle(color: Colors.deepPurple),)),
         
         /// Saves the book information using bookServices and closes the dialog.
         ElevatedButton(
@@ -74,6 +95,11 @@ class _addBookScreenState extends State<addBookScreen> {
             widget.nameController,
             widget.authorController,
             widget.shelfId,
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.deepPurple,
+            shape: StadiumBorder(),
+            foregroundColor: Colors.white
           ),
           child: Text("Add"),
         ),

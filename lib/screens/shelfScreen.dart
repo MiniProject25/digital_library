@@ -1,6 +1,7 @@
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/models/shelfModel.dart';
 import 'package:digital_library/screens/bookDetailsScreen.dart';
+import 'package:digital_library/widgets/bookTile.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_library/services/ShelfServices.dart';
 import 'package:digital_library/services/BookServices.dart';
@@ -68,17 +69,28 @@ class _shelfScreenState extends State<shelfScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        titleTextStyle: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.deepPurple),
+        backgroundColor: Colors.deepPurple.shade50,
         title: Text("Delete Shelf: ${widget.shelf.name}?"),
-        content: Text("Are you sure you want to delete the shelf?"),
+        content: Text("Are you sure you want to delete this shelf?"),
+        contentTextStyle: TextStyle(fontFamily: 'OpenSans', color: Colors.black),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+              onPressed: () => Navigator.pop(context), child: Text("Cancel"),),
           TextButton(
               onPressed: () async {
                 await sService.deleteShelf(shelfId, context);
                 Navigator.pop(context, true); // return true to pop screen
               },
-              child: Text("Delete")),
+              child: Text("Delete"),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.deepPurple,
+                foregroundColor: Colors.white
+              )),
         ],
       ),
     );
@@ -86,10 +98,8 @@ class _shelfScreenState extends State<shelfScreen> {
 
   /// Navigates to Book Details and reloads list if book gets deleted
   Future<void> _navigateToBook(Book book, BuildContext context) async {
-    final result = await Navigator.push(
-      context, 
-      MaterialPageRoute(builder: (context) => bookDetailsScreen(book: book))
-    );
+    final result = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => bookDetailsScreen(book: book)));
 
     if (result == true) {
       _loadBooks(); // Reload if book was removed
@@ -99,8 +109,16 @@ class _shelfScreenState extends State<shelfScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.deepPurple.shade50,
       appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Color.fromRGBO(94, 0, 159, 1),
         title: Text(widget.shelf.name),
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: 'Poppins',
+          fontSize: 25,
+        ),
         actions: [
           IconButton(
               onPressed: () => _confirmDelete(widget.shelf.id),
@@ -119,8 +137,15 @@ class _shelfScreenState extends State<shelfScreen> {
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: 'Search for a book',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                      hintStyle: TextStyle(color: Colors.deepPurple.shade200),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.deepPurple),
+                          borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.deepPurple),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      // suffixIcon: Icon(Icons.search, color: Colors.deepPurple,),
                     ),
                     onChanged: (_) => bService.searchBooks(
                         _searchController, updateSearchResults, books),
@@ -141,18 +166,16 @@ class _shelfScreenState extends State<shelfScreen> {
                   ? Center(
                       child: Text(
                         "No books found!",
-                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                        style: TextStyle(fontSize: 18, fontFamily: 'OpenSans', color: Colors.deepPurple.shade200, fontStyle: FontStyle.italic),
                       ),
                     )
                   : ListView.builder(
                       itemCount: filteredBooks.length,
                       itemBuilder: (context, index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(filteredBooks[index].title),
-                            subtitle: Text(filteredBooks[index].author),
-                            onTap: () => _navigateToBook(filteredBooks[index], context),
-                          ),
+                        final book = filteredBooks[index];
+                        return BookTile(
+                          book: book, 
+                          onTap: () => _navigateToBook(book, context)
                         );
                       },
                     ),
@@ -179,8 +202,9 @@ class _shelfScreenState extends State<shelfScreen> {
             _onBookAdded(newBook.shelfId);
           }
         },
+        backgroundColor: Colors.deepPurple.shade100,
         tooltip: "Add a Book",
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Color.fromRGBO(94, 0, 159, 1),),
       ),
     );
   }

@@ -274,6 +274,8 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                       itemCount: recentlyRead.length,
                       itemBuilder: (context, index) {
                         return ListTile(
+                          textColor: Colors.white,
+                          iconColor: Colors.white,
                           title: Text(recentlyRead[index].title),
                           onTap: () => Navigator.push(
                             context,

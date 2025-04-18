@@ -81,10 +81,17 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.deepPurple.shade50,
       appBar: AppBar(
+        titleTextStyle: TextStyle(
+          fontFamily: 'Poppins',
+          color: Colors.white,
+          fontSize: 25
+        ),
+        backgroundColor: Color.fromRGBO(94, 0, 159, 1),
         title: Text(widget.book.title),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.white,),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -112,11 +119,19 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
                       ),
                     );
                   },
-                  child: Text("Read"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple.shade500,
+                    foregroundColor: Colors.white
+                  ),
+                  child: Text("Read", style: TextStyle(fontFamily: 'OpenSans'),),
                 ),
 
                 /// Placeholder for rating functionality
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple.shade500,
+                    foregroundColor: Colors.white
+                  ),
                   onPressed: () {
                     showDialog(
                         context: context,
@@ -179,17 +194,17 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
                           });
                         });
                   },
-                  child: Text("Rate"),
+                  child: Text("Rate", style: TextStyle(fontFamily: 'OpenSans'),),
                 ),
 
                 /// Deletes the book after confirmation
                 ElevatedButton(
                   onPressed: () => _confirmDelete(widget.book.id),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    textStyle: TextStyle(color: Colors.white),
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white
                   ),
-                  child: Text("Delete"),
+                  child: Text("Delete", style: TextStyle(fontFamily: 'OpenSans'),),
                 ),
               ],
             ),
@@ -197,29 +212,54 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
             SizedBox(height: 20),
 
             /// Book info card (metadata placeholder)
-            Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+            SizedBox(
+              width: double.infinity,
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Author: ${widget.book.author}",
-                      style: TextStyle(fontSize: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  color: Colors.deepPurple.shade100,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Author: ${widget.book.author}",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'OpenSans',
+                            fontWeight: FontWeight.w500, 
+                            color: Colors.deepPurple.shade900,),
+                        ),
+                        SizedBox(height: 15),
+                        Text("No. of Pages: --", style: TextStyle(
+                          fontSize: 18, 
+                          fontFamily: 'OpenSans', 
+                          fontWeight: FontWeight.w500, 
+                          color: Colors.deepPurple.shade900,)),
+                        SizedBox(height: 12),
+                        Text("Pages Read: --", style: TextStyle(
+                          fontSize: 18, 
+                          fontFamily: 'OpenSans', 
+                          fontWeight: FontWeight.w500, 
+                          color: Colors.deepPurple.shade900,)),
+                        SizedBox(height: 10),
+                        Text("Rating: ${widget.book.rating}",
+                            style: TextStyle(
+                              fontSize: 18, 
+                              fontFamily: 'OpenSans', 
+                              fontWeight: FontWeight.w500, 
+                              color: Colors.deepPurple.shade900,)),
+                      ],
                     ),
-                    SizedBox(height: 10),
-                    Text("No. of Pages: --", style: TextStyle(fontSize: 16)),
-                    Text("Pages Read: --", style: TextStyle(fontSize: 16)),
-                    Text("Rating: ${widget.book.rating}",
-                        style: TextStyle(fontSize: 16)),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ),   
           ],
         ),
       ),

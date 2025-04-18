@@ -24,26 +24,38 @@ class _addShelfScreenState extends State<addShelfScreen> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      titleTextStyle: TextStyle(fontFamily: 'Poppins', fontSize: 22,),
-      backgroundColor: Colors.deepPurple.shade300,
+      titleTextStyle: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 22, 
+        fontWeight: FontWeight.bold,
+        color: Colors.deepPurple
+      ),
+      backgroundColor: Colors.deepPurple.shade50,
       title: Text("Create a New Shelf"),
       content: TextField(
         controller: _shelfName,
         decoration: InputDecoration(
           hintText: "Enter shelf name", 
-          hintStyle: TextStyle(color: Colors.white)
+          hintStyle: TextStyle(color: Colors.deepPurple.shade200),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.deepPurple),
+          )
         ),
       ),
       actions: [
         // Closes the dialog without saving
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text("Cancel"),
+          child: Text("Cancel", style: TextStyle(color: Colors.deepPurple),),
         ),
         // Calls the shelf service to save the new shelf to database
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.deepPurple,
+            shape: StadiumBorder(),
+          ),
           onPressed: () => sService.submitShelf(context, _shelfName),
-          child: Text("Add"),
+          child: Text("Add", style: TextStyle(color: Colors.white),),
         ),
       ],
     );
