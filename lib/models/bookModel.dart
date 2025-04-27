@@ -28,6 +28,9 @@ class Book {
   /// integer that denotes the rating of the book (out of 5)
   int rating;
 
+  /// integer that denotes the current page the reader is in
+  int lastReadPage;
+
   /// Creates a new [Book] object with the required details.
   ///
   /// The [id] should be unique, [title] and [author] provide book details,
@@ -42,6 +45,7 @@ class Book {
     required this.shelfId,
     required this.lastRead,
     required this.rating,
+    required this.lastReadPage,
   });
 
   /// Converts the [Book] object into a `Map<String, dynamic>` format.
@@ -58,6 +62,7 @@ class Book {
       'shelfId': shelfId,
       'lastRead': lastRead,
       'rating': rating,
+      'lastReadPage': lastReadPage,
     };
   }
 
@@ -76,6 +81,7 @@ class Book {
       shelfId: map['shelfId'],
       lastRead: map['lastRead'],
       rating: map['rating'],
+      lastReadPage: map['lastReadPage']
     );
   }
 }

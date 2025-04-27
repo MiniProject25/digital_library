@@ -1,6 +1,7 @@
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/models/shelfModel.dart';
 import 'package:digital_library/screens/bookDetailsScreen.dart';
+import 'package:digital_library/themes/themes.dart';
 import 'package:digital_library/widgets/bookTile.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_library/services/ShelfServices.dart';
@@ -111,8 +112,11 @@ class _shelfScreenState extends State<shelfScreen> {
     return Scaffold(
       backgroundColor: Colors.deepPurple.shade50,
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Color.fromRGBO(94, 0, 159, 1),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: purpleGradient
+          ),
+        ),
         title: Text(widget.shelf.name),
         titleTextStyle: TextStyle(
           color: Colors.white,

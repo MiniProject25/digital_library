@@ -2,6 +2,8 @@ import 'package:digital_library/main.dart';
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/screens/pdfViewerScreen.dart';
 import 'package:digital_library/services/BookServices.dart';
+import 'package:digital_library/services/db_service.dart';
+import 'package:digital_library/themes/themes.dart';
 import 'package:flutter/material.dart';
 
 /// Displays detailed information about a selected [Book].
@@ -24,12 +26,23 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
   /// current rating of the book
   int selectedRating = 0;
 
+  /// last read page
+  int lastReadPage = 1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _updateLastReadPage();
+  }
+
   /// Called when returning to this screen from another route.
   /// Used to refresh the rating display.
   @override
   void didPopNext() {
     // TODO: implement didPopNext
     super.didPopNext();
+    fetchLastReadPage();
     setState(() {
       widget.book.rating = selectedRating;
     });
@@ -51,6 +64,21 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
     // TODO: implement dispose
     super.dispose();
     routeObserver.unsubscribe(this);
+  }
+
+  /// to update the last read page
+  void _updateLastReadPage() {
+    setState(() {
+      lastReadPage = widget.book.lastReadPage;
+    });
+  }
+
+  /// fetch the last read page as it gets updated in the db
+  Future<void> fetchLastReadPage() async {
+    final page = await bService.getLastReadPage(widget.book.id);
+    setState(() {
+      lastReadPage = page;
+    });
   }
 
   /// Shows a confirmation dialog before deleting the book.
@@ -88,7 +116,11 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
           color: Colors.white,
           fontSize: 25
         ),
-        backgroundColor: Color.fromRGBO(94, 0, 159, 1),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: purpleGradient
+          ),
+        ),
         title: Text(widget.book.title),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white,),
@@ -113,6 +145,8 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
                       context,
                       MaterialPageRoute(
                         builder: (context) => pdfViewerScreen(
+                          currentPage: lastReadPage,
+                          book: widget.book,
                           filePath: widget.book.filePath,
                           fileName: widget.book.title,
                         ),
@@ -236,7 +270,7 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
                             color: Colors.deepPurple.shade900,),
                         ),
                         SizedBox(height: 15),
-                        Text("No. of Pages: --", style: TextStyle(
+                        Text("Last Page Read: $lastReadPage", style: TextStyle(
                           fontSize: 18, 
                           fontFamily: 'OpenSans', 
                           fontWeight: FontWeight.w500, 

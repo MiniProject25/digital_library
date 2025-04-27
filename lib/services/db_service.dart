@@ -29,7 +29,6 @@ class databaseHelper {
 
   /// Creates the shelves and books tables with foreign key relationship.
   Future<void> _createDB(Database db, int version) async {
-    print("Creating DB...");
 
     // Enable foreign key support for SQLite
     await db.execute("PRAGMA foreign_keys = ON;");
@@ -53,6 +52,7 @@ class databaseHelper {
           shelfId TEXT NOT NULL,
           lastRead INTEGER,
           rating INTEGER,
+          lastReadPage INTEGER,
           FOREIGN KEY (shelfId) REFERENCES shelves(id) ON DELETE CASCADE
         );
       ''');

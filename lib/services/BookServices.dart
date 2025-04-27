@@ -75,6 +75,7 @@ class bookServices {
         shelfId: shelfId,
         lastRead: 0,
         rating: 0,
+        lastReadPage: 0
       );
 
       await _dbHelper.insertBook(newBook);
@@ -121,6 +122,7 @@ class bookServices {
         shelfId: maps[i]['shelfId'],
         lastRead: maps[i]['lastRead'],
         rating: maps[i]['rating'],
+        lastReadPage: maps[i]['lastReadPage'],
       );
     });
   }
@@ -154,5 +156,24 @@ class bookServices {
   Future<void> updateBookRating(String bookId, int newRating) async {
     final db = await databaseHelper.instance.database;
     await db.update('books', {'rating' : newRating}, where: 'id = ?', whereArgs: [bookId]);
+  }
+
+  /// To save the last read page
+  Future<void> saveLastReadPage(String bookId, int page) async {
+    final db = await databaseHelper.instance.database;
+    await db.update('books', {'lastReadPage': page}, where: 'id = ?', whereArgs: [bookId]);
+  }
+
+  /// to get the last read page
+  Future<int> getLastReadPage(String bookId) async {
+    final db = await databaseHelper.instance.database;
+    final result = await db.query('books', columns: ['lastReadPage'], where: 'id = ?', whereArgs: [bookId]);
+
+    if (result.isNotEmpty) {
+      return (result.first['lastReadPage'] as int?) ?? 1;
+    }
+    else {
+      return 1;
+    }
   }
 }

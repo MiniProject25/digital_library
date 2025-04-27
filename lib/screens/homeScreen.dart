@@ -7,6 +7,7 @@ import 'package:digital_library/screens/shelfScreen.dart';
 import 'package:digital_library/services/BookServices.dart';
 import 'package:digital_library/services/ShelfServices.dart';
 import 'package:digital_library/services/db_service.dart';
+import 'package:digital_library/themes/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_library/widgets/shelfCard.dart';
 
@@ -102,7 +103,11 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
       /// App bar with a welcoming message
       appBar: AppBar(
         title: Text("Welcome to ReadSpace!"),
-        backgroundColor: Color.fromRGBO(94, 0, 159, 1),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: purpleGradient
+          ),
+        ),
         titleTextStyle: TextStyle(
             color: const Color.fromARGB(255, 255, 255, 255),
             fontSize: 25,
@@ -149,7 +154,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 26),
             child: Container(
               decoration: BoxDecoration(
-                color: Color.fromRGBO(94, 0, 159, 1),
+                color: purpleTheme.colorScheme.secondary,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               width: double.infinity,
@@ -250,7 +255,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.0),
-                color: Color.fromRGBO(94, 0, 159, 1),
+                color: purpleTheme.colorScheme.secondary,
               ),
               width: MediaQuery.of(context).size.width,   
               margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),

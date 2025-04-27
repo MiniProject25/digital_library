@@ -1,3 +1,4 @@
+import 'package:digital_library/themes/themes.dart';
 import 'package:flutter/material.dart';
 
 /// A reusable widget that represents a single shelf as a card.
@@ -21,7 +22,7 @@ class shelfCard extends StatelessWidget {
         margin: const EdgeInsets.all(10),
         width: 150,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 91, 52, 159),
+          gradient: purpleGradient,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black12),
 
