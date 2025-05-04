@@ -151,11 +151,12 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
         children: [
           /// Horizontal list of shelves or message to create a shelf
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 26),
+            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10),
             child: Container(
               decoration: BoxDecoration(
                 color: purpleTheme.colorScheme.secondary,
                 borderRadius: BorderRadius.circular(16.0),
+                // boxShadow: BoxShadow(),
               ),
               width: double.infinity,
               height: 300,
@@ -248,7 +249,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
             ),
           ),
 
-          const SizedBox(height: 8),
+          // const SizedBox(height: 4),
 
           /// Vertical list of recently read books
           Expanded(
@@ -258,7 +259,7 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
                 color: purpleTheme.colorScheme.secondary,
               ),
               width: MediaQuery.of(context).size.width,   
-              margin: EdgeInsets.only(bottom: 20, left: 15, right: 15),
+              margin: EdgeInsets.only(bottom: 10, left: 5, right: 5),
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             
               /// Display message if list is empty

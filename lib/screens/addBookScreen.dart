@@ -38,14 +38,14 @@ class _addBookScreenState extends State<addBookScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final textTheme = Theme.of(context).textTheme;
+    final ColorScheme = Theme.of(context).colorScheme;
+
     return AlertDialog(
       title: Text("Add a book"),
-      titleTextStyle: TextStyle(
-        color: Colors.deepPurple,
-        fontSize: 22,
-        fontFamily: 'Poppins'
-      ),
-      backgroundColor: Colors.deepPurple.shade50,
+      titleTextStyle: textTheme.labelLarge,
+      backgroundColor: ColorScheme.surface,
       content: Column(
         // Ensures content fits nicely inside the alert dialog
         mainAxisSize: MainAxisSize.min,
@@ -77,9 +77,13 @@ class _addBookScreenState extends State<addBookScreen> {
 
           SizedBox(height: 16,),
           /// Button to trigger file picker and upload a PDF file.
-          MaterialButton(
-            onPressed: () => bService.uploadBook(context),
-            child: Text('Upload a file', style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.w500),),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: MaterialButton(
+              onPressed: () => bService.uploadBook(context),
+              child: Text('Upload a file', 
+                style: textTheme.labelSmall,),
+            ),
           ),
         ],
       ),

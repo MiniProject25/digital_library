@@ -109,8 +109,11 @@ class _shelfScreenState extends State<shelfScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      backgroundColor: Colors.deepPurple.shade50,
+      backgroundColor: ColorScheme.surface,
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -118,11 +121,7 @@ class _shelfScreenState extends State<shelfScreen> {
           ),
         ),
         title: Text(widget.shelf.name),
-        titleTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: 'Poppins',
-          fontSize: 25,
-        ),
+        titleTextStyle: textTheme.headlineLarge,
         actions: [
           IconButton(
               onPressed: () => _confirmDelete(widget.shelf.id),

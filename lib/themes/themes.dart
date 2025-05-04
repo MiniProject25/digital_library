@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-enum AppTheme { light, dark, purple }
+// enum AppTheme { light, dark, purple }
 
 /// purple theme
 const Color _purplePrimary = Colors.deepPurple;
@@ -20,7 +20,7 @@ const Color _darkSecondary = Color.fromARGB(255, 0, 0, 0);
 const Color _darkBackground = Color.fromARGB(255, 255, 255, 255);
 
 /// Gradient For Backgrounds
-/// 
+///
 LinearGradient backgroundGradient = LinearGradient(
   colors: [
     // ignore: duplicate_ignore
@@ -34,7 +34,7 @@ LinearGradient backgroundGradient = LinearGradient(
 );
 
 /// Gradient for AppBars and Buttons
-/// 
+///
 LinearGradient purpleGradient = LinearGradient(
   colors: [
     _purplePrimary,
@@ -46,7 +46,7 @@ LinearGradient purpleGradient = LinearGradient(
 );
 
 /// Building a ThemeData for each theme
-/// 
+///
 ThemeData purpleTheme = ThemeData(
   colorScheme: ColorScheme.light(
     primary: _purplePrimary,
@@ -56,6 +56,63 @@ ThemeData purpleTheme = ThemeData(
   appBarTheme: AppBarTheme(
     foregroundColor: Colors.white,
     elevation: 0,
+  ),
+  textTheme: TextTheme(
+    // titles in the appbar
+    headlineLarge: TextStyle(
+        color: Colors.white,
+        fontSize: 26,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'Poppins'),
+
+    labelLarge: TextStyle(
+      color: Colors.deepPurple,
+      fontSize: 22,
+      fontFamily: 'Poppins',
+    ),
+
+    // text in the body
+    bodyMedium: TextStyle(
+      color: Colors.deepPurple.shade900,
+      fontFamily: 'OpenSans',
+      fontWeight: FontWeight.w500,
+      fontSize: 20,
+    ),
+
+    labelSmall: TextStyle(
+      fontFamily: 'OpenSans',
+      color: Colors.deepPurple,
+      fontWeight: FontWeight.w900,
+      fontSize: 14,
+    ),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: WidgetStateProperty.all<Color>(
+        Colors.deepPurple.shade500,
+      ),
+      foregroundColor: WidgetStateProperty.all<Color>(
+        Colors.white,
+      ),
+      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+        (Set<WidgetState> states) {
+          if (states.contains(WidgetState.pressed)) {
+            return Colors.deepPurple.shade900.withOpacity(0.2);
+          }
+          return null;
+        },
+      ),
+      textStyle: WidgetStateProperty.all<TextStyle>(
+        const TextStyle(
+          fontSize: 18,
+          fontFamily: 'OpenSans',
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+  cardTheme: CardTheme(
+    color: Colors.deepPurple.shade50,
   ),
 );
 

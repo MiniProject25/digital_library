@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'package:digital_library/main.dart';
 import 'package:digital_library/models/bookModel.dart';
 import 'package:digital_library/screens/pdfViewerScreen.dart';
 import 'package:digital_library/services/BookServices.dart';
-import 'package:digital_library/services/db_service.dart';
 import 'package:digital_library/themes/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 /// Displays detailed information about a selected [Book].
 ///
@@ -43,6 +44,7 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
     // TODO: implement didPopNext
     super.didPopNext();
     fetchLastReadPage();
+    extractMetaData();
     setState(() {
       widget.book.rating = selectedRating;
     });
@@ -106,24 +108,40 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
     );
   }
 
+  // extracting the book metadata
+  Future<void> extractMetaData() async {
+    final path = File(widget.book.filePath);
+    final bytes = await path.readAsBytes();
+
+    final document = PdfDocument(inputBytes: bytes);
+    final info = document.documentInformation;
+
+    print('Title: ${info.title}');
+    print('Author: ${info.author}');
+
+    document.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final textTheme = Theme.of(context).textTheme;
+    final elevatedButtonTheme = Theme.of(context).elevatedButtonTheme;
+    final ColorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.deepPurple.shade50,
+      backgroundColor: ColorScheme.surface,
       appBar: AppBar(
-        titleTextStyle: TextStyle(
-          fontFamily: 'Poppins',
-          color: Colors.white,
-          fontSize: 25
-        ),
+        titleTextStyle: textTheme.headlineLarge,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: purpleGradient
-          ),
+          decoration: BoxDecoration(gradient: purpleGradient),
         ),
         title: Text(widget.book.title),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white,),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -153,19 +171,16 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple.shade500,
-                    foregroundColor: Colors.white
+                  style: elevatedButtonTheme.style,
+                  child: Text(
+                    "Read",
+                    style: TextStyle(fontFamily: 'OpenSans'),
                   ),
-                  child: Text("Read", style: TextStyle(fontFamily: 'OpenSans'),),
                 ),
 
                 /// Placeholder for rating functionality
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple.shade500,
-                    foregroundColor: Colors.white
-                  ),
+                  style: elevatedButtonTheme.style,
                   onPressed: () {
                     showDialog(
                         context: context,
@@ -228,17 +243,22 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
                           });
                         });
                   },
-                  child: Text("Rate", style: TextStyle(fontFamily: 'OpenSans'),),
+                  child: Text(
+                    "Rate",
+                    style: TextStyle(fontFamily: 'OpenSans'),
+                  ),
                 ),
 
                 /// Deletes the book after confirmation
                 ElevatedButton(
                   onPressed: () => _confirmDelete(widget.book.id),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    foregroundColor: Colors.white
+                      backgroundColor: Colors.redAccent,
+                      foregroundColor: Colors.white),
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(fontFamily: 'OpenSans'),
                   ),
-                  child: Text("Delete", style: TextStyle(fontFamily: 'OpenSans'),),
                 ),
               ],
             ),
@@ -257,43 +277,33 @@ class _bookDetailsScreenState extends State<bookDetailsScreen> with RouteAware {
                   ),
                   color: Colors.deepPurple.shade100,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Author: ${widget.book.author}",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'OpenSans',
-                            fontWeight: FontWeight.w500, 
-                            color: Colors.deepPurple.shade900,),
+                          style: textTheme.bodyMedium,
                         ),
                         SizedBox(height: 15),
-                        Text("Last Page Read: $lastReadPage", style: TextStyle(
-                          fontSize: 18, 
-                          fontFamily: 'OpenSans', 
-                          fontWeight: FontWeight.w500, 
-                          color: Colors.deepPurple.shade900,)),
+                        Text("Last Page Read: $lastReadPage",
+                            style: textTheme.bodyMedium
+                        ),
                         SizedBox(height: 12),
-                        Text("Pages Read: --", style: TextStyle(
-                          fontSize: 18, 
-                          fontFamily: 'OpenSans', 
-                          fontWeight: FontWeight.w500, 
-                          color: Colors.deepPurple.shade900,)),
+                        Text("Pages Read: --",
+                            style: textTheme.bodyMedium
+                        ),
                         SizedBox(height: 10),
                         Text("Rating: ${widget.book.rating}",
-                            style: TextStyle(
-                              fontSize: 18, 
-                              fontFamily: 'OpenSans', 
-                              fontWeight: FontWeight.w500, 
-                              color: Colors.deepPurple.shade900,)),
+                            style: textTheme.bodyMedium
+                          ),
                       ],
                     ),
                   ),
                 ),
               ),
-            ),   
+            ),
           ],
         ),
       ),
