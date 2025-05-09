@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-// enum AppTheme { light, dark, purple }
+enum AppTheme { light, dark, purple }
 
 /// purple theme
 const Color _purplePrimary = Colors.deepPurple;
@@ -133,11 +133,27 @@ ThemeData darkTheme = ThemeData(
 );
 
 class ThemeProvider extends ChangeNotifier {
+  // ignore: prefer_final_fields
   ThemeData _currentTheme = purpleTheme; // Default theme is Purple
-  ThemeData get currentTheme => _currentTheme;
+  // ignore: prefer_final_fields
+  AppTheme _currentAppTheme = AppTheme.purple; // Default theme is Purple
 
-  void setTheme(ThemeData theme) {
-    _currentTheme = theme;
+  ThemeData get currentTheme => _currentTheme; 
+  AppTheme get themeType => _currentAppTheme;
+
+  void setTheme(AppTheme theme) {
+    _currentAppTheme = theme;
+    switch(theme) {
+      case AppTheme.light:
+        _currentTheme = lightTheme;
+        break;
+      case AppTheme.dark:
+        _currentTheme = darkTheme;
+        break;
+      case AppTheme.purple:
+        _currentTheme = purpleTheme;
+        break;
+    }
     notifyListeners();
   }
 }

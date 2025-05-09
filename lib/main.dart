@@ -1,6 +1,7 @@
 import 'package:digital_library/models/shelfModel.dart';
 import 'package:digital_library/screens/addShelfScreen.dart';
 import 'package:digital_library/screens/homeScreen.dart';
+import 'package:digital_library/screens/settings.dart';
 import 'package:digital_library/screens/shelfScreen.dart';
 import 'package:digital_library/themes/themes.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const homeScreen(),
         '/addShelf': (context) => const addShelfScreen(),
+        '/settings': (context) => const Settings(),
       },
 
       // Dynamic routes — for screens that NEED arguments

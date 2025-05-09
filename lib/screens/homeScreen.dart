@@ -98,6 +98,8 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme = Theme.of(context).colorScheme;
+    final textScheme = Theme.of(context).textTheme;
     return Scaffold(
       // backgroundColor: Color.fromRGBO(137, 157, 239, 1),
       /// App bar with a welcoming message
@@ -123,25 +125,32 @@ class _homeScreenState extends State<homeScreen> with RouteAware {
 
       /// Drawer for future settings or advanced options
       endDrawer: Drawer(
+        
         child: ListView(
           children: [
-            const DrawerHeader(child: Text("Digital Reader")),
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: ColorScheme.primary,
+              ),
+              child: Text("ReadSpace", style: textScheme.headlineLarge,),
+            ),
             ListTile(
-              title: const Text("Settings"),
+              title: Text("Settings", style: textScheme.bodyMedium,),
               onTap: () {
-                print("Clicked 1!");
+                Navigator.pushNamed(context, '/settings');
               },
             ),
             ListTile(
-              title: const Text("About"),
+              title: Text("About", style: textScheme.bodyMedium,),
               onTap: () {
-                print("Clicked 2!");
+                showDialog(context: context, builder: (context) {
+                  return AlertDialog(
+                    title: Text("About ReadSpace"),
+                    content: Text("This is a simple app for reading books."),
+                  );
+                });
               },
             ),
-            ListTile(
-              title: Text("Delete DB"),
-              onTap: () => databaseHelper.instance.deleteDatabaseFile(),
-            )
           ],
         ),
       ),
